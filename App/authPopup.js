@@ -73,7 +73,7 @@ function handleResponse(response) {
             const blockName = window.location.href; // TODO use block name that this login/signup action was triggered from (e.g. "searchresults", "header", etc.)
 
             // Send POST request to create user in the database
-            fetch('https://eaf196c6-1697-460f-a268-5f51545096c2.mock.pstmn.io/api/User', {
+            fetch('https://cb0e0ba6-1435-4e35-9021-c33801c6bcf6.mock.pstmn.io/api/User', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain',

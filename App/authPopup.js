@@ -70,11 +70,9 @@ function handleResponse(response) {
     if (response !== null) {
         if (response.account.idTokenClaims.newUser) {
             console.log("PetPlace - New user detected. Sending POST request to create user in the database.");
-            // Send POST request to create user in the database
-            // if successful response, set a flag in localStorage to indicate this is a registered user
-
             const blockName = window.location.href; // TODO use block name that this login/signup action was triggered from (e.g. "searchresults", "header", etc.)
 
+            // Send POST request to create user in the database
             fetch('https://eaf196c6-1697-460f-a268-5f51545096c2.mock.pstmn.io/api/User', {
                 method: 'POST',
                 headers: {

@@ -73,32 +73,15 @@ function handleResponse(response) {
             // Send POST request to create user in the database
             // if successful response, set a flag in localStorage to indicate this is a registered user
 
-            const userData = { 
-                accountId: response.account.homeAccountId, 
-                username: response.account.username,
-                sourceFeature: window.location.href, // TODO use block name that this login/signup action was triggered from (e.g. "searchresults", "header", etc.)
-                dateCreated: new Date().toISOString(),
-                firstName: response.account.idTokenClaims.given_name,
-                lastName: response.account.idTokenClaims.family_name,
-                email: response.account.idTokenClaims.emails[0],
-                zipCode: response.account.idTokenClaims.postalCode,
-                phoneNumber: response.account.idTokenClaims.extension_PhoneNumber,
-                communicationPreference: response.account.idTokenClaims.extension_disclaimer ? 1 : 0,
-                emailOptIn: response.account.idTokenClaims.extension_EmailOptIn,
-                smsoptIn: response.account.idTokenClaims.extension_SMSOptIn,
-                petPlacePartnerOffer: response.account.idTokenClaims.extension_PetPlaceandPartneroffers,
-                catNewsletterOptIn: response.account.idTokenClaims.extension_CatNewsletter,
-                dogNewsletterOptIn: response.account.idTokenClaims.extension_DogNewsletter
-            };
-
-            console.log('Creating user with user data: ', userData);
+            const blockName = window.location.href; // TODO use block name that this login/signup action was triggered from (e.g. "searchresults", "header", etc.)
 
             fetch('https://eaf196c6-1697-460f-a268-5f51545096c2.mock.pstmn.io/api/User', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'text/plain',
+                    'Authorization': 'Bearer ' + response.accessToken,
                 },
-                body: JSON.stringify(userData)
+                body: `${blockName}`
             })
             .then(response => {
                 console.log('Success:', response.status);

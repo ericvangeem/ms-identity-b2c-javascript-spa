@@ -2,6 +2,13 @@
 // configuration parameters are located at authConfig.js
 const myMSALObj = new msal.PublicClientApplication(msalConfig);
 
+myMSALObj.initialize().then(() => {
+    // Register Callbacks for Redirect flow
+    myMSALObj.handleRedirectPromise().then(handleResponse).catch((error) => {
+        console.log(error);
+    });
+});
+
 let accountId = "";
 let username = "";
 
@@ -109,6 +116,13 @@ function signIn() {
         .catch(error => {
             console.log(error);
         });
+
+    // use loginRedirect() method for web clients that don't provide great support for pop-ups (i.e. iOS Safari)
+    /* myMSALObj.loginRedirect(loginRequest)
+    .then(handleResponse)
+    .catch(error => {
+        console.log(error);
+    }); */
 }
 
 function signOut() {

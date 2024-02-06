@@ -2,12 +2,22 @@
 // configuration parameters are located at authConfig.js
 const myMSALObj = new msal.PublicClientApplication(msalConfig);
 
+myMSALObj.initialize().then(() => {
+    // Register Callbacks for Redirect flow
+    myMSALObj.handleRedirectPromise().then(handleResponse).catch((error) => {
+        console.log(error);
+    });
+});
+
 let accountId = "";
 let username = "";
 
 function setAccount(account) {
     accountId = account.homeAccountId;
     username = account.username;
+
+    
+
     welcomeUser(username);
 }
 
@@ -65,6 +75,29 @@ function handleResponse(response) {
      */
 
     if (response !== null) {
+        if (response.account.idTokenClaims.newUser) {
+            console.log("PetPlace - New user detected. Sending POST request to create user in the database.");
+            const blockName = window.location.href; // TODO use block name that this login/signup action was triggered from (e.g. "searchresults", "header", etc.)
+
+            // Send POST request to create user in the database
+            fetch('https://cb0e0ba6-1435-4e35-9021-c33801c6bcf6.mock.pstmn.io/api/User', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                    'Authorization': 'Bearer ' + response.accessToken,
+                },
+                body: `${blockName}`
+            })
+            .then(response => {
+                console.log('Success:', response.status);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.log("PetPlace - Existing user has logged in.");
+        }
+
         setAccount(response.account);
     } else {
         selectAccount();
@@ -83,6 +116,13 @@ function signIn() {
         .catch(error => {
             console.log(error);
         });
+
+    // use loginRedirect() method for web clients that don't provide great support for pop-ups (i.e. iOS Safari)
+    /* myMSALObj.loginRedirect(loginRequest)
+    .then(handleResponse)
+    .catch(error => {
+        console.log(error);
+    }); */
 }
 
 function signOut() {
